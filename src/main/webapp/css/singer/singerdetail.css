@@ -1,0 +1,23 @@
+/**
+* @fileoverview  
+* @author  wtk
+* @date 2021-06-13
+*/
+/*边框 */
+.shadow {
+    border: solid 2px rgba(83, 80, 80, 0.554);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+}
+
+.container {
+    margin: 16px 0 20px 0;
+}
+
+#singerdetail_musicname {
+    margin: 7px 0 0 0;
+}
+#singerdetail_desc {
+    cursor: default;
+    background-color: #FFFFFF;
+}

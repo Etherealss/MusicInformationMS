@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace为Dao接口的完整类名-->
+<mapper namespace="pers.wtk.dao.UserDao">
+
+    <!--新增User-->
+    <insert id="insertUser">
+        INSERT INTO `user`
+        (username, `password`, sex, register_date, balance)
+        VALUES (#{username}, #{password}, #{sex}, CURRENT_TIMESTAMP, 0.0);
+        <!-- 配置保存时获取插入的id -->
+        <selectKey keyColumn="id" keyProperty="id" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+    <update id="updateUserInfo">
+        UPDATE `user`
+        SET username      = #{username},
+            sex           = #{sex},
+            register_date = #{registerDate},
+            balance       = #{balance}
+        WHERE id = #{id};
+    </update>
+
+    <update id="updateUserPassword">
+        UPDATE `user`
+        SET `password` = #{newPw}
+        WHERE id = #{userId}
+          AND `password` = #{oldPw};
+    </update>
+
+    <delete id="deleteUser">
+        DELETE
+        FROM `user`
+        WHERE id = #{id};
+    </delete>
+    <delete id="deleteMultiUser">
+        <if test="ids != null and ids.length > 0">
+            <foreach collection="ids" open="DELETE FROM user WHERE id IN (" close=")" item="id" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <!--获取User-->
+    <select id="getUser" resultType="User">
+        SELECT id,
+               username,
+               `password`,
+               sex,
+               register_date,
+               balance
+        FROM `user`
+        WHERE id = #{id};
+    </select>
+
+    <select id="getUserInfo" resultType="pers.wtk.pojo.po.User">
+        SELECT id,
+               username,
+               sex,
+               register_date,
+               balance
+        FROM `user`
+        WHERE id = #{id};
+    </select>
+
+    <select id="getAllUser" resultType="User">
+        SELECT *
+        from `user`;
+    </select>
+    <select id="getUserSize" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM user;
+    </select>
+    <select id="getUserSizeByUserName" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM user
+        WHERE username LIKE concat("%", #{keyword}, "%");
+    </select>
+
+    <!--———————————————————————————————— 获取范围记录 ————————————————————————————————-->
+
+    <select id="getRangeUser" resultType="pers.wtk.pojo.po.User">
+        SELECT *
+        FROM user
+        LIMIT #{start}, #{offset};
+    </select>
+    <select id="getRangeUserByUsername" resultType="pers.wtk.pojo.po.User">
+        SELECT *
+        FROM user
+        WHERE username LIKE concat("%", #{username}, "%")
+        LIMIT #{start}, #{offset};
+    </select>
+    <!--—————————————————————————————— 获取范围记录结束 ——————————————————————————————-->
+
+
+</mapper>

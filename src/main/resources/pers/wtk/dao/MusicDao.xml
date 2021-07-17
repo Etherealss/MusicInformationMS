@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace为Dao接口的完整类名-->
+<mapper namespace="pers.wtk.dao.MusicDao">
+    <insert id="insertMusic">
+        INSERT into music
+        (`name`, media_file_path, release_date, permission, price)
+        values (#{name},
+        #{mediaFilePath},
+        #{releaseDate},
+        #{permission},
+        #{price});
+        <!-- 配置保存时获取插入的id -->
+        <selectKey keyColumn="id" keyProperty="id" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+
+    <update id="updateMusic">
+        UPDATE music
+        SET `name`          = #{name},
+            media_file_path = #{mediaFilePath},
+            release_date    = #{releaseDate},
+            permission      = #{permission},
+            price           = #{price}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="deleteMusic">
+        DELETE
+        FROM music
+        WHERE id = #{id};
+    </delete>
+    <!--删除多条-->
+    <delete id="deleteMultiMusic">
+        <if test="ids != null and ids.length > 0">
+            <foreach collection="ids" open="DELETE FROM music WHERE id IN (" close=")" item="id" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <!--———————————————————————————————— 获取记录数 ————————————————————————————————-->
+
+    <select id="getMusicSize" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM music;
+    </select>
+
+    <select id="getMusicSizeBySingerName" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM music m
+                 inner join
+             music_singer ms
+                 inner join
+             singer s ON m.id = ms.music_id
+                 AND s.id = ms.singer_id
+        WHERE s.singer_name LIKE concat("%", #{singerName}, "%");
+    </select>
+
+    <select id="getMusicSizeByMusicName" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM music
+        WHERE name LIKE concat("%", #{musicName}, "%");
+    </select>
+    <!--———————————————————————————————— 获取记录数结束 ————————————————————————————————-->
+
+    <!--———————————————————————————————— 获取范围记录 ————————————————————————————————-->
+    <!--无限制-->
+    <select id="getRangeMusic" resultType="Music">
+        SELECT *
+        FROM music
+        LIMIT #{start}, #{offset};
+    </select>
+    <!--音乐名-->
+    <select id="getRangeMusicByMusicName" resultType="pers.wtk.pojo.po.Music">
+        SELECT *
+        FROM music
+        WHERE name LIKE concat("%", #{musicName}, "%")
+        LIMIT #{start}, #{offset};
+    </select>
+    <!--歌手名-->
+    <select id="getRangeMusicBySingerName" resultType="pers.wtk.pojo.po.Music">
+        SELECT *
+        FROM music m
+                 inner join
+             music_singer ms
+                 inner join
+             singer s ON m.id = ms.music_id
+                 AND s.id = ms.singer_id
+        WHERE s.singer_name LIKE concat("%", #{singerName}, "%")
+        LIMIT #{start}, #{offset};
+    </select>
+
+    <!--—————————————————————————————— 获取范围记录结束 ——————————————————————————————-->
+
+    <select id="getMusic" resultType="Music">
+        SELECT *
+        FROM music
+        WHERE id = #{id};
+    </select>
+
+    <select id="searchMusicByName" resultType="Music">
+        SELECT *
+        FROM music
+        WHERE name LIKE concat("%", #{musicName}, "%");
+    </select>
+
+    <select id="getMusicBySingerName" resultType="pers.wtk.pojo.po.Music">
+        SELECT *
+        FROM music m
+                 inner join
+             music_singer ms
+                 inner join
+             singer s ON m.id = ms.music_id
+                 AND s.id = ms.singer_id
+        WHERE s.singer_name LIKE concat("%", #{singerName}, "%");
+    </select>
+    <select id="getAllMusic" resultType="pers.wtk.pojo.po.Music">
+        SELECT *
+        FROM music;
+    </select>
+
+</mapper>

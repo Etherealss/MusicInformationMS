@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="css/sign.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/utils/user_input_util.js"></script>
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/user/sign.js"></script>
+    <script src="js/user/register.js"></script>
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+</header>
+
+<div class="sign_constainter">
+    <div class="signbox">
+        <!--直接显示的界面，是登录表单，但是包含了注册按钮，可以打开注册模态框-->
+        <div>
+            <form id="login-form" action="">
+                <h2>登录</h2>
+                <div>
+                    <input type="text" class="sign_input" name="id" id="login_id" placeholder="请输入的你的用户ID"/>
+                </div>
+                <div>
+                    <input type="text" class="sign_input" name="password" id="login_password" placeholder="请输入你的用户密码"/>
+                </div>
+                <div id="login_btn_box">
+                    <button type="button" class="sign_btn" id="login_user_button" onclick="validateLogin(false)">用户登录</button>
+                    <button type="button" class="sign_btn" id="login_admin_button" onclick="validateLogin(true)">管理员登录</button>
+                </div>
+                <div id="register_btn_box">
+                    <!--模态框按钮-->
+                    <button type="button" class="sign_btn" id="register_button" data-toggle="modal" data-target="#register_modal">注册</button>
+                </div>
+            </form>
+            <div id="login_tip" style="margin-top: 25px">
+
+            </div>
+        </div>
+        <!--模态框 注册-->
+        <div>
+            <div class="modal fade" id="register_modal" tabindex="-1" role="dialog" aria-labelledby="register_modal"
+                 data-backdrop="static">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <!--头部-->
+                        <div class="modal-header">
+                            <!--右上角关闭按钮-->
+                            <!--关闭时清空表单-->
+                            <button type="button" class="close" id="register_close" data-dismiss="modal"
+                                    aria-label="Close" 
+                                    onclick="registerReset()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            
+                            <!--标题-->
+                            <h4 class="modal-title" id="register_modal_label">注册</h4>
+                        </div>
+                        
+                        <!--主体-->
+                        <div class="modal-body">
+                            <!-------------------------------注册表单-------------------------------->
+                            <form class="form-horizontal container-fluid" id="register_form" role="form"
+                                  action="" method="post">
+                                <!-----输入框，autocomplete="off"不保存输入记录----->
+                                <!--昵称-->
+                                <div class="form-group">
+                                    <label for="register_nickname" class="col-sm-2 control-label">昵称</label>
+                                    <div class="col-sm-9">
+                                        <!--发现autofocus属性没用，改用js代码自动获取焦点-->
+                                        <input type="text" class="form-control" id="register_nickname"
+                                               name="username"
+                                               placeholder="请输入账号昵称" autocomplete="off"/>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <!--账号id-->
+                                <div class="form-group">
+                                    <label for="register_userid" class="col-sm-2 control-label">账号</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="register_userid"
+                                               name="id"
+                                               placeholder="请输入账号ID并牢记" autocomplete="off">
+                                    </div>
+                                    
+                                </div>
+                                
+                                <!--密码-->
+                                <div class="form-group">
+                                    <label for="register_pw1" class="col-sm-2 control-label">密码</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="register_pw1"
+                                               name="password"
+                                               placeholder="请输入密码并牢记" autocomplete="off">
+                                    </div>
+                                    
+                                </div>
+                                
+                                <!--再次输入密码-->
+                                <div class="form-group">
+                                    <label for="register_pw2" class="col-sm-2 control-label">再次输入</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="register_pw2"
+                                               name="register_pw2"
+                                               placeholder="请重复您刚输入的密码" autocomplete="off">
+                                    </div>
+                                    
+                                </div>
+                                
+                                <!--性别-->
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-xs-3 control-label" style="margin-top: 7px">性别</label>
+                                    <div class="radio">
+                                        <label class="radio-inline col-sm-2 col-sm-offset-2 col-xs-3 col-xs-offset-1">
+                                            <input type="radio" name="sex" id="male-radio" value="1"
+                                                   checked> 小哥哥
+                                        </label>
+                                        <label class="radio-inline col-sm-offset-2 col-xs-3">
+                                            <input type="radio" name="sex" id="female-radio" value="0">
+                                            小姐姐
+                                        </label>
+                                    </div>
+                                    
+                                </div>
+                                <!-----提示框----->
+                                <div class="form-group" id="register_tip"></div>
+                                
+                                <!-----底部按钮----->
+                                <div class="form-group">
+                                    <div class="row">
+                                        <!--注册按钮-->
+                                        <div class="col-xs-2 col-xs-offset-4 col-sm-2 col-sm-offset-4">
+                                            <!--注册按钮，点击时执行validate函数判断非空，通过ajax提交数据并判断-->
+                                            <button type="button" class="form-control btn btn-primary"
+                                                    id="register_submit_button"
+                                                    onclick="validateRegister()" style="margin-bottom: 5px">
+                                                注册
+                                            </button>
+                                            
+                                        </div>
+                                        
+                                        <!--重置按钮-->
+                                        <div class="col-xs-2 col-sm-2">
+                                            <!--通过getRegisterTipDiv函数清空表单提示框样式-->
+                                            <button type="reset" class="form-control btn btn-default" id="reset-button"
+                                                    style="margin-bottom: 5px" onclick="registerReset()">
+                                                重置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!--模态框主题-->
+                    </div>
+                </div>
+            </div>
+        </div><!--模态框结束-->
+    </div>
+</div>
+</body>
+</html>

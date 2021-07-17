@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>歌手详情</title>
+
+    <link rel="stylesheet" href="css/test.css" type="text/css"/>
+    <link rel="stylesheet" href="css/sign.css" type="text/css"/>
+    <link rel="stylesheet" href="css/singer/singerdetail.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/user/user_init.js"></script>
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/singer/singerdetail_init.js"></script>
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+    <!-- 用户头像及信息 -->
+    <div id="user_info_box">
+        <div class="btn-group">
+            <button type="button" id="header_username_btn"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                用户名
+                <!--图标-->
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#" id="header_user_center">个人中心</a></li>
+                <li><a href="#" id="header_change_pw">修改密码</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#" id="header_user_logout">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<!--主体-->
+<div class="shadow container">
+    <div class="container-fluid">
+        <div class="form-group" id="singerdetail_singername">
+            <label>歌手名：</label>
+            <span></span>
+        </div>
+        <div class="form-group">
+            <label for="singerdetail_desc">歌手简介：</label>
+            <textarea class="form-control" id="singerdetail_desc" rows="15"
+                      style="resize:none;" disabled></textarea>
+        </div>
+
+        <div class="form-group" id="singerdetail_sex_box">
+            <label>性别：</label>
+            <span></span>
+        </div>
+
+        <div class="form-group" id="singerdetail_birthday_box">
+            <label>生日：</label>
+            <span></span>
+        </div>
+
+        <div class="form-group" id="singerdetail_tel_box">
+            <label>联系方式：</label>
+            <span></span>
+        </div>
+
+    </div><!--container-fluid-->
+</div><!--container-->
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace为Dao接口的完整类名-->
+<mapper namespace="pers.wtk.dao.SingerDao">
+
+    <select id="getSingersByMusicId" resultType="Singer">
+        SELECT s.*
+        FROM singer s
+                 LEFT JOIN music_singer ms ON s.id = ms.singer_id
+        WHERE ms.music_id = #{musicId};
+    </select>
+
+    <select id="getSinger" resultType="Singer">
+        SELECT *
+        FROM singer
+        WHERE id = #{id};
+    </select>
+
+    <select id="getSingerByName" resultType="Singer">
+        SELECT *
+        FROM singer
+        WHERE singer_name = #{singerName};
+    </select>
+    <select id="searchSingerByName" resultType="pers.wtk.pojo.po.Singer">
+        SELECT *
+        FROM singer
+        WHERE singer_name LIKE concat("%", #{keyword}, "%");
+    </select>
+    <select id="getSingerSize" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM singer;
+    </select>
+    <select id="getSingerSizeBySingerName" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM singer
+        WHERE singer_name LIKE concat("%", #{keyword}, "%");
+    </select>
+    <!--———————————————————————————————— 获取范围记录 ————————————————————————————————-->
+
+    <select id="getRangeSinger" resultType="pers.wtk.pojo.po.Singer">
+        SELECT *
+        FROM singer
+        LIMIT #{start}, #{offset};
+    </select>
+    <select id="getRangeSingerBySingerName" resultType="pers.wtk.pojo.po.Singer">
+        SELECT *
+        FROM singer
+        WHERE singer_name LIKE concat("%", #{singerName}, "%")
+        LIMIT #{start}, #{offset};
+    </select>
+    <!--—————————————————————————————— 获取范围记录结束 ——————————————————————————————-->
+
+    <insert id="insertSinger">
+        INSERT INTO singer (`singer_name`, `sex`, `birthday`, `tel`, `description`)
+        VALUES (#{singerName}, #{sex}, #{birthday}, #{tel}, #{discription});
+        <!-- 配置保存时获取插入的id -->
+        <selectKey keyColumn="id" keyProperty="id" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+    <update id="updateSinger">
+        UPDATE singer
+        SET singer_name = #{singerName},
+            sex         = #{sex},
+            birthday    = #{birthday},
+            tel         = #{tel},
+            discription = #{discription}
+        WHERE id = #{id};
+    </update>
+    <delete id="deleteSinger">
+        DELETE
+        FROM singer
+        WHERE id = #{id};
+    </delete>
+    <delete id="deleteMultiSinger">
+        <if test="ids != null and ids.length > 0">
+            <foreach collection="ids" open="DELETE FROM singer WHERE id IN (" close=")" item="id" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+</mapper>

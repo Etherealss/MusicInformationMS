@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    status="warn" 日志框架本身的输出日志级别
+    monitorInterval="5" 自动加载配置文件的间隔时间，不低于 5 秒。可以实现热更新
+-->
+<Configuration status="warn" monitorInterval="5">
+    <!-- 集中配置属性进行管理。使用:${name} -->
+    <properties>
+        <property name="fileLevel">debug</property>
+        <property name="LOG_HOME">/www/MusicInformationMS/webapp-logs</property>
+        <!--控制台输出格式-->
+        <!--%d{HH:mm:ss.SSS} [%t] [%-5level] %c{36}:%L - %m%n-->
+        <property name="consolePatternLayout">
+            %d{mm:ss.SSS} %l %n[%level] %m%n
+        </property>
+        <!--文件输出格式-->
+        <property name="filePatternLayout">
+            [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] %l %c{36} - %m%n
+        </property>
+        <Property name="charset">utf-8</Property>
+    </properties>
+
+    <!-- 日志处理 -->
+    <Appenders>
+        <!-- 普通信息 控制台输出 -->
+        <Console name="simpleConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="${consolePatternLayout}"/>
+            <!-- 控制台输出所有信息 -->
+            <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="ACCEPT"/>
+        </Console>
+
+        <!-- 警告信息 控制台输出 -->
+        <Console name="warningConsole" target="SYSTEM_ERR">
+            <PatternLayout pattern="${consolePatternLayout}"/>
+            <!-- 控制台只输出WARN及以上级别的信息 -->
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <!--使用随机读写流的日志文件输出 appender，性能提高-->
+        <RandomAccessFile name="accessFile" fileName="${LOG_HOME}/AccessLog.log">
+            <PatternLayout charset="${charset}" pattern="${filePatternLayout}"/>
+            <ThresholdFilter level="${fileLevel}"/>
+        </RandomAccessFile>
+
+        <!--按照一定规则拆分的日志文件的 appender-->
+        <!-- filePattern表示以天为单位生产文件夹，以分钟为单位拆分文件 -->
+        <RollingRandomAccessFile name="rollingFile" fileName="${LOG_HOME}/log.log"
+                                 filePattern="${LOG_HOME}/logs/$${date:yyyy-MM-dd}/log-%d{yyyy-MM-dd-HH}-%i.log">
+            <!--日志级别过滤器-->
+            <ThresholdFilter level="${fileLevel}" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--日志消息格式-->
+            <PatternLayout charset="${charset}" pattern="${filePatternLayout}"/>
+            <Policies>
+                <!--在系统启动时，触发拆分规则，生产一个新的日志文件-->
+                <OnStartupTriggeringPolicy/>
+                <!--按照文件大小拆分，10MB -->
+                <SizeBasedTriggeringPolicy size="4 MB"/>
+                <!--按照时间节点拆分，规则根据filePattern定义的-->
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <!--在同一个目录下，文件的个数限定为 30 个，超过进行覆盖-->
+            <DefaultRolloverStrategy max="30"/>
+            <!-- 日志保留策略，配置只保留七天 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="${LOG_HOME}/" maxDepth="1">
+                    <IfFileName glob="*.log"/>
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+
+    <!--logger 定义-->
+    <Loggers>
+        <!--自定义异步的logger对象
+            includeLocation="false" 关闭日志记录的行号信息
+            additivity="false" 不在继承 rootlogger 对象
+        -->
+        <AsyncLogger name="simpleAsyncLogger" level="info" includeLocation="false" additivity="true">
+            <!--
+                此处的AppenderRef用来指定该日志输出到哪个Appender，
+                如果没有指定，就会默认继承自Root。
+                如果指定了，那么会在指定的这个Appender和Root的Appender中都会输出，
+                此时我们可以设置Logger的additivity="false"只在自定义的Appender中进行输出。
+            -->
+            <AppenderRef ref="accessFile"/>
+            <AppenderRef ref="rollingFile"/>
+        </AsyncLogger>
+
+        <logger name="testLogger" level="trace" additivity="true">
+        </logger>
+
+        <!--使用 rootLogger 配置 日志级别-->
+        <Root level="all">
+            <AppenderRef ref="simpleConsole"/>
+            <AppenderRef ref="warningConsole"/>
+        </Root>
+        <!-- 第三方日志系统 -->
+        <logger name="org.springframework" level="warn"/>
+        <logger name="org.hibernate" level="warn"/>
+        <logger name="org.jboss.netty" level="warn"/>
+        <logger name="org.apache.http" level="warn"/>
+        <logger name="org.apache.ibatis" level="warn"/>
+        <logger name="org.mybatis" level="warn"/>
+        <logger name="org.elasticsearch" level="warn"/>
+        <logger name="com.alibaba.druid" level="warn"/>
+    </Loggers>
+</Configuration>

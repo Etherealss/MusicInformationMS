@@ -1,0 +1,38 @@
+/**
+* @fileoverview  
+* @author  wtk
+* @date 2021-06-13
+*/
+/*边框 */
+.shadow {
+    border: solid 2px rgba(83, 80, 80, 0.554);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+}
+
+.container {
+    margin: 16px 0 20px 0;
+}
+
+#add_singer_btn {
+    float: right;
+    margin: 0 0 0 60px;
+}
+
+#add_singer_date {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    width: 222px;
+    border-radius: 4px;
+    box-shadow: inset 1px 1px #ccc;
+    outline: none;
+}
+
+#add_singer_tel_box input{
+    display: inline-block;
+    width: 222px;
+}
+
+#sex_box {
+    float: left;
+}

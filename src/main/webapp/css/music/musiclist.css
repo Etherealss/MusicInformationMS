@@ -1,0 +1,70 @@
+/**
+* @fileoverview  音乐管理页面样式
+* @author  wtk
+* @date 2021-06-10
+*/
+.userinfo {
+
+}
+
+.musics_user_btns button {
+    display: block;
+}
+
+#container {
+    position: absolute;
+    margin: auto;
+}
+
+.form_bottom_btn {
+    display: inline-block;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+#musics_table_titleline th {
+    text-align: center;
+    width: 70px;
+}
+
+#musics_table tr td {
+    /*强制不换行*/
+    white-space: nowrap;
+    overflow: hidden;
+    /*超出文本域的隐藏，省略号*/
+    text-overflow: ellipsis;
+}
+
+#musics_search_type_box {
+    padding: 7px 0 4px 0;
+}
+
+/*搜索的按钮，包括添加音乐、删除所选音乐*/
+#musics_nav_btn {
+    margin: 8px 0 0 0;
+}
+
+/*多选删除的复选框*/
+.multi_delete_checkbox {
+    margin: 0 0 0 14px;
+}
+
+#musics_nav_btn li button {
+    margin: 0 0 0 5px;
+}
+
+.shadow {
+    border: solid 2px rgba(83, 80, 80, 0.554);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+}
+
+#musics_options_btn a {
+    margin: 0 0 0 8px;
+}
+
+.pager {
+    margin: -10px 0;
+}

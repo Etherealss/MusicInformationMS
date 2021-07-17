@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐列表</title>
+
+    <link rel="stylesheet" href="css/music/musiclist.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/utils/user_input_util.js"></script>
+    <script src="js/utils/page_util.js"></script>
+    <script src="js/user/user_init.js"></script>
+    <script src="js/music/musiclist_init.js"></script>
+    <script src="js/music/music_control.js"></script>
+    <script src="js/music/music_search.js"></script>
+    <script src="js/user/user_control.js"></script>
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+    <!-- 用户头像及信息 -->
+    <div id="user_info_box">
+
+        <div class="btn-group">
+            <button type="button" id="header_username_btn"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                用户名
+                <!--图标-->
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" id="header_user_center">个人中心</a></li>
+                <li><a href="javascript:void(0)" id="header_change_pw">修改密码</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0)" id="header_user_logout" onclick="ajaxLogout()">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="javascript:void(0)">音乐管理</a>
+        </div>
+        <!--搜索-->
+        <div class="collapse navbar-collapse" id="musics_search_box">
+            <ul class="nav navbar-nav">
+                <!--搜索方式 下拉框-->
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+                       role="button" aria-haspopup="true" aria-expanded="false">
+                        搜索类型
+                        <span class="caret"></span>
+                    </a>
+                    <!--下拉框选项-->
+                    <ul class="dropdown-menu" id="musics_search_type_menu" data-search-type="musicName">
+                        <li><a href="javascript:void(0)" onclick="changeSearchType('musicName')">按音乐名搜索按</a></li>
+                        <li><a href="javascript:void(0)" onclick="changeSearchType('musicId')">音乐ID搜索</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="javascript:void(0)" onclick="changeSearchType('singer')">按歌手姓名搜索</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--搜索表单-->
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入音乐名" id="musics_search_input">
+                </div>
+                <button type="button" class="btn btn-default" onclick="searchMusic()">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right" id="musics_nav_btn">
+                <li>
+                    <button type="button" id="musics_to_singerlist_btn"
+                            class="btn btn-primary" onclick="window.location.href = 'singerlist.html'">
+                        前往歌手列表
+                    </button>
+                </li>
+<!--                <li>-->
+<!--                    <button type="button" id="musics_add_music_btn"-->
+<!--                            class="btn btn-primary" onclick="toAddMusic()">-->
+<!--                        添加音乐-->
+<!--                    </button>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button type="button" id="musics_delete_music_btn"-->
+<!--                            class="btn btn-default" onclick="deleteMultiMusic()">-->
+<!--                        删除所选音乐-->
+<!--                    </button>-->
+<!--                </li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--主体-->
+<article class="shadow container">
+    <!-- 音乐管理 -->
+    <!--表格-->
+    <div id="musics_form" class="row" style="margin: 10px 20px 0 20px;">
+        <h3 id="musics_form_title">音乐管理</h3>
+        <!--table-bordered:边框  table-striped:条纹-->
+        <table class="table table-hover table-bordered table-striped" id="musics_table">
+            <thead class="thead-light">
+            <tr id="musics_table_titleline">
+                <th style="width: 5%;">选择</th>
+                <th style="width:7%;">序号</th>
+                <th style="width:7%;">音乐ID</th>
+                <th style="width:26%;">音乐名</th>
+                <th style="width:10%;">歌手</th>
+                <th style="width:12%;">发行时间</th>
+                <th style="width:5%;">免费</th>
+                <th style="width:5%;">价格</th>
+                <th style="width:15%;">操作</th>
+            </tr>
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    <div class="multi_delete_checkbox">-->
+<!--                        <input type="checkbox" name="multi_delete" value="1">-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--                <td>1</td>-->
+<!--                <td>1231341</td>-->
+<!--                <td title="测试">测试</td>-->
+<!--                <td title="歌手">歌手</td>-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <a href="detail.html/1" class="btn btn-primary btn-xs">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <span class="glyphicon glyphicon-info-sign"></span>下载&ndash;&gt;-->
+<!--&lt;!&ndash;                    </a>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--                <td>2020年05月01日</td>-->
+<!--                <td>免费</td>-->
+<!--                <td>0</td>-->
+<!--                <td>-->
+<!--                    <a href="addmusic.html?id=1" class="btn btn-primary btn-xs">-->
+<!--                        <span class="glyphicon glyphicon-info-sign"></span>详情-->
+<!--                    </a>-->
+<!--                    <a href="addmusic.html?id=1" class="btn btn-info btn-xs">-->
+<!--                        <span class="glyphicon glyphicon-edit"></span> 编辑-->
+<!--                    </a>-->
+<!--                    <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick='deleteMusic(" + arr[i].id + ")'>-->
+<!--                        <span class="glyphicon glyphicon-remove"></span>删除-->
+<!--                    </a>-->
+<!--                </td>-->
+<!--            </tr>-->
+
+            </thead>
+        </table>
+    </div>
+
+    <!--分页导航栏-->
+    <div class="row">
+        <nav class="pager">
+            <!-- 按钮 -->
+            <ul class="pagination" id="page_btn_area">
+                <!--                                <li id="page-previous">-->
+                <!--                                    <a href='javascript:void(0)' aria-label="Previous">-->
+                <!--                                        <span aria-hidden="true">&laquo;</span>-->
+                <!--                                    </a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href='javascript:void(0)'>1</a></li>-->
+                <!--                                <li><a href='javascript:void(0)'>2</a></li>-->
+                <!--                                <li><a href='javascript:void(0)'>3</a></li>-->
+                <!--                                <li><a href='javascript:void(0)'>4</a></li>-->
+                <!--                                <li><a href='javascript:void(0)'>5</a></li>-->
+                <!--                                <li id="page-next">-->
+                <!--                                    <a href='javascript:void(0)' aria-label="Next">-->
+                <!--                                        <span aria-hidden="true">&raquo;</span>-->
+                <!--                                    </a>-->
+                <!--                                </li>-->
+            </ul>
+        </nav>
+    </div>
+    <!--    <ul id="form_bottom_btn" class="pager">-->
+    <!--        <li id="musics_form_previous"><a href=""><span aria-hidden="true">&larr;</span> 上一页</a></li>-->
+    <!--        <li id="musics_form_next"><a href="">下一页 <span aria-hidden="true">&rarr;</span></a></li>-->
+    <!--    </ul>-->
+</article>
+</body>
+</html>

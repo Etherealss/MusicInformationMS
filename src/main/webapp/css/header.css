@@ -1,0 +1,40 @@
+/**
+* @fileoverview 页眉
+* @author  wtk
+* @date 2021-06-13
+*/
+/*页眉 */
+header {
+    border-bottom: solid 2px #999999;
+    background: #354144;
+    padding: 5px 0 5px 0;
+    height: 65px;
+}
+
+#system_name_box span {
+    color: white;
+    font-size: 2.3em;
+    font-family: "方正粗黑宋简体", "楷书", "微软雅黑", serif;
+    cursor: pointer;
+}
+#system_name_box {
+    margin: 5px auto;
+
+    float: left;
+}
+
+#user_info_box {
+    float: right;
+
+    text-align: right;
+    /*用户名居中效果*/
+    margin: 9px 50px 0 0;
+}
+
+#user_info_box div .dropdown-menu {
+    min-width: 96px;
+}
+
+#header_username_btn {
+    margin: auto;
+}

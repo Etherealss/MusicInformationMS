@@ -1,0 +1,20 @@
+/**
+* @fileoverview  边框样式，用来看布局
+* @author  wtk
+* @date 2021-06-15
+*/
+.red {
+    border: 1px solid red;
+}
+
+.blue {
+    border: 1px solid blue;
+}
+
+.pink {
+    border: 1px solid rgba(251, 125, 241, 0.6);
+}
+
+.yellow {
+    border: 1px solid rgba(241, 217, 0, 0.6);
+}

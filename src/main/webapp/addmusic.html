@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐管理</title>
+
+    <link rel="stylesheet" href="css/test.css" type="text/css"/>
+    <link rel="stylesheet" href="css/sign.css" type="text/css"/>
+    <link rel="stylesheet" href="css/music/add_music.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/utils/user_input_util.js"></script>
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/music/music_add.js"></script>
+    <script src="js/music/music_update.js"></script>
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+    <!-- 用户头像及信息 -->
+    <div id="user_info_box">
+        <div class="btn-group">
+            <button type="button" id="header_username_btn"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                用户名
+                <!--图标-->
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#" id="header_user_center">个人中心</a></li>
+                <li><a href="#" id="header_change_pw">修改密码</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#" id="header_user_logout">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<!--主体-->
+<div class="shadow container">
+    <div class="container-fluid">
+        <!--音乐名输入框-->
+        <div class="form-group ">
+            <label for="add_music_name">音乐名</label>
+            <input type="text" id="add_music_name" class="form-control" placeholder="30个字以内哦">
+        </div>
+        <!-- 歌词输入框 -->
+        <div class="form-group">
+            <label for="add_music_lyric">歌词</label>
+            <!-- [resize:none]不能调整文本域大小 -->
+            <textarea class="form-control" id="add_music_lyric" rows="15" style="resize:none"></textarea>
+        </div>
+
+        <!--下面要浮动，用盒子括起来-->
+        <div id="add_music_lds_box">
+            <div id="add_music_ld_box">
+                <div class="form-group" id="add_music_language_box">
+                    <label>歌词语言：</label>
+                    <input type="text" class="form-control" placeholder="中文、英文、日语、其他"/>
+                </div>
+                <div class="form-group" id="add_music_date_box">
+                    <label>发行日期：</label>
+                    <input type="date" id="add_music_date"/>
+                </div>
+            </div>
+            <div class="form-group" id="add_music_siger_box">
+                <label>歌手姓名：</label>
+                <input type="text" class="form-control" placeholder="请输入姓名，多位歌手用空格隔开"/>
+            </div>
+        </div>
+
+        <!--下面要来个浮动，用盒子括起来-->
+        <div>
+            <!--听歌权限-->
+            <div class="form-group" id="charge_box">
+                <div id="charge_radio_box">
+                    <label>收费模式：</label>
+                    <!--三种收费模式的单选按钮-->
+                    <div class="btn-group" data-toggle="buttons" id="charge_type_box">
+                        <label class="btn btn-primary" onclick="changeMusicCharge(false)">
+                            <input type="radio" name="music_permission" id="permission1"
+                                   value="0"> 付费
+                        </label>
+                        <label class="btn btn-primary" onclick="changeMusicCharge(true)">
+                            <input type="radio" name="music_permission" id="permission2"
+                                   value="1"> 免费
+                        </label>
+                        <label class="btn btn-primary" onclick="changeMusicCharge(false)">
+                            <input type="radio" name="music_permission" id="permission3"
+                                   value="2"> 会员免费
+                        </label>
+                    </div>
+                </div>
+                <div id="add_music_price_box">
+                    <input type="text" class="form-control" placeholder="请输入价格(元)"/>
+                </div>
+            </div>
+            <!-- 自定义标签 + 两个按钮 -->
+            <div class="row" id="add_music_btn">
+                <button class="btn btn-primary" id="add_music_submit"
+                        onclick="return addMusic();">
+                    完成
+                </button>
+                <button class="btn btn-default" id="add_music_cancel"
+                        onclick="cancelAddMusic();" style="margin-left: 10px;">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div><!--container-fluid-->
+</div><!--container-->
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace为Dao接口的完整类名-->
+<mapper namespace="pers.wtk.dao.LyricDao">
+    <insert id="insertLyric">
+        INSERT INTO music_lyric (music_id, lyric_text)
+        VALUES (#{musicId}, #{lyricText});
+    </insert>
+
+    <update id="updateLyric">
+        UPDATE music_lyric
+        SET lyric_text=#{lyricText}
+        WHERE music_id = #{musicId}
+          AND `language` = #{language};
+    </update>
+
+    <delete id="deleteLyric">
+        DELETE
+        FROM music_lyric
+        WHERE music_id = #{musicId}
+          AND `language` = #{language};
+    </delete>
+
+    <select id="getLyricByMusic" resultType="Lyric">
+        SELECT *
+        FROM music_lyric
+        WHERE music_id = #{musicId};
+    </select>
+
+    <select id="getLyricByMusicAndLang" resultType="Lyric">
+        SELECT *
+        FROM music_lyric
+        WHERE music_id = #{musicId}
+          AND `language` = #{language};
+    </select>
+</mapper>

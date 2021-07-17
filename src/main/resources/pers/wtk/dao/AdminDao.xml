@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace为Dao接口的完整类名-->
+<mapper namespace="pers.wtk.dao.AdminDao">
+    <insert id="addUserPremission">
+        INSERT INTO admin
+        VALUES (#{userId}, #{permission});
+    </insert>
+    <delete id="deleteUserPremission">
+        DELETE
+        FROM admin
+        WHERE userId = #{userId}
+          AND permission = #{permission};
+    </delete>
+    <select id="getUserPremissions" resultType="java.lang.String">
+        SELECT `permission`
+        FROM `admin`
+        WHERE userId = #{userId};
+    </select>
+</mapper>

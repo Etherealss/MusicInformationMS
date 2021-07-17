@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- mybatis的主配置文件 -->
+<configuration>
+    <settings>
+        <!--自动驼峰-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="logImpl" value="NO_LOGGING"/>
+        <!-- 开启二级缓存的支持 -->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    <!--别名-->
+    <typeAliases>
+        <package name="pers.wtk.pojo.po"/>
+    </typeAliases>
+</configuration>

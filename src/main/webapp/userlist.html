@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+
+    <link rel="stylesheet" href="css/user/userlist.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/utils/page_util.js"></script>
+    <script src="js/user/user_init.js"></script>
+    <script src="js/user/user_control.js"></script>
+    <script src="js/user/userlist_init.js"></script>
+    <script src="js/user/user_control.js"></script>
+    <script src="js/user/user_search.js"></script>
+
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+    <!-- 用户头像及信息 -->
+    <div id="user_info_box">
+        <div class="btn-group">
+            <button type="button" id="header_username_btn"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                用户名
+                <!--图标-->
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" id="header_user_center">个人中心</a></li>
+                <li><a href="javascript:void(0)" id="header_change_pw">修改密码</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0)" id="header_user_logout" onclick="ajaxLogout()">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="javascript:void(0)">用户管理</a>
+        </div>
+        <!--搜索-->
+        <div class="collapse navbar-collapse" id="users_search_box">
+            <ul class="nav navbar-nav">
+                <!--搜索方式 下拉框-->
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+                       role="button" aria-haspopup="true" aria-expanded="false">
+                        搜索类型
+                        <span class="caret"></span>
+                    </a>
+                    <!--下拉框选项-->
+                    <ul class="dropdown-menu" id="users_search_type_menu" data-search-type="userName">
+                        <li><a href="javascript:void(0)" onclick="changeUserSearchType('userName')">按用户名搜索按</a></li>
+                        <li><a href="javascript:void(0)" onclick="changeUserSearchType('userId')">按用户ID搜索</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--搜索表单-->
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入用户名" id="users_search_input">
+                </div>
+                <button type="button" class="btn btn-default" onclick="searchUser()">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right" id="users_nav_btn">
+                <li>
+                    <button type="button" id="musics_to_musiclist_btn"
+                            class="btn btn-primary" onclick="window.location.href = 'musiclist.html'">
+                        前往音乐列表
+                    </button>
+                </li>
+<!--                <li>-->
+<!--                    <button type="button" id="users_add_music_btn"-->
+<!--                            class="btn btn-primary admin_btn" onclick="toAddUser()">-->
+<!--                        添加用户-->
+<!--                    </button>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button type="button" id="users_delete_music_btn"-->
+<!--                            class="btn btn-default admin_btn" onclick="deleteMultiUser()">-->
+<!--                        删除所选用户-->
+<!--                    </button>-->
+<!--                </li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--主体-->
+<article class="shadow container">
+    <!-- 音乐管理 -->
+    <!--表格-->
+    <div id="users_form" class="row" style="margin: 10px 20px 0 20px;">
+        <h3 id="users_form_title">用户管理</h3>
+        <!--table-bordered:边框  table-striped:条纹-->
+        <table class="table table-hover table-bordered table-striped" id="users_table">
+            <thead class="thead-light">
+            <tr id="users_table_titleline">
+                <th style="width:7%;">选择</th>
+                <th style="width:7%;">序号</th>
+                <th style="width:7%;">用户ID</th>
+                <th style="width:10%;">用户名</th>
+                <th style="width:5%;">性别</th>
+                <th style="width:12%;">注册时间</th>
+                <th style="width:10%;">余额</th>
+                <th style="width:20%;">权限</th>
+                <th style="width:22%;">操作</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <!--分页导航栏-->
+    <div class="row">
+        <nav class="pager">
+            <ul class="pagination" id="page_btn_area">
+            </ul>
+        </nav>
+    </div>
+</article>
+
+<!-- 授权模态框 -->
+<div class="modal fade" id="users_permission_modal" tabindex="-1" role="dialog" aria-labelledby="users_permission_modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">用户授权</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal container-fluid" id="users_permission_form" role="form"
+                      action="" method="post">
+                    <div class="form-group">
+                        <label for="users_permission_userid" class="col-sm-2 control-label">用户ID：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="users_permission_userid"
+                                   name="username"
+                                   placeholder="请输入账号ID" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group" id="users_permission_box">
+                        <label>权限：</label>
+                        <!--权限下拉多选框-->
+                        <select multiple class="form-control">
+                            <!--js动态添加option元素-->
+                        </select>
+                    </div>
+                </form>
+                <div id="login_tip" style="margin-top: 25px">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="updatePermission()">修改授权</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

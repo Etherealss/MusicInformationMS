@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>歌手管理</title>
+
+    <link rel="stylesheet" href="css/test.css" type="text/css"/>
+    <link rel="stylesheet" href="css/sign.css" type="text/css"/>
+    <link rel="stylesheet" href="css/singer/add_singer.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/utils/user_input_util.js"></script>
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/singer/singer_add.js"></script>
+    <script src="js/singer/singer_update.js"></script>
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+    <!-- 用户头像及信息 -->
+    <div id="user_info_box">
+        <div class="btn-group">
+            <button type="button" id="header_username_btn"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                用户名
+                <!--图标-->
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" id="header_user_center">个人中心</a></li>
+                <li><a href="javascript:void(0)" id="header_change_pw">修改密码</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0)" id="header_user_logout">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<!--主体-->
+<div class="shadow container">
+    <div class="container-fluid">
+        <!--歌手名输入框-->
+        <div class="form-group ">
+            <label for="add_singer_name">歌手名</label>
+            <input type="text" id="add_singer_name" class="form-control" placeholder="30个字以内哦">
+        </div>
+        <!-- 歌词输入框 -->
+        <div class="form-group">
+            <label for="add_singer_disc">歌手描述</label>
+            <!-- [resize:none]不能调整文本域大小 -->
+            <textarea class="form-control" id="add_singer_disc" rows="15"
+                      style="resize:none" placeholder="限200字"></textarea>
+        </div>
+
+        <!--下面要浮动，用盒子括起来-->
+        <div id="add_singer_bt_box">
+            <div class="form-group" id="add_singer_birthday_box">
+                <label>歌手生日：</label>
+                <input type="date" id="add_singer_date"/>
+            </div>
+            <div class="form-group" id="add_singer_tel_box">
+                <label>联系方式：</label>
+                <input type="text" class="form-control" placeholder="请输入联系方式(11位手机号码)"/>
+            </div>
+        </div>
+
+        <!--下面要来个浮动，用盒子括起来-->
+        <div>
+            <!--听歌权限-->
+            <div class="form-group" id="sex_box">
+                <label>歌手性别：</label>
+                <!--三种收费模式的单选按钮-->
+                <div class="btn-group" data-toggle="buttons" id="sex_btn_box">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="sex" id="sex_male"
+                               value="0"> 男
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="sex" id="sex_female"
+                               value="1"> 女
+                    </label>
+                </div>
+            </div>
+            <!-- 自定义标签 + 两个按钮 -->
+            <div class="row" id="add_singer_btn">
+                <button class="btn btn-primary" id="add_singer_submit"
+                        onclick="return addSinger();">
+                    完成
+                </button>
+                <button class="btn btn-default" id="add_singer_cancel"
+                        onclick="cancelAddSinger();" style="margin-left: 10px;">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div><!--container-fluid-->
+</div><!--container-->
+
+</body>
+</html>

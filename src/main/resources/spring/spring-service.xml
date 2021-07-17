@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-lazy-init="true"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+>
+
+    <!-- 告知spring创建容器时要扫描的包，这是spring就会扫描这个包及其子包所有类的注解 -->
+    <context:component-scan base-package="pers.wtk.service"/>
+
+    <!-- 事务 -->
+    <!-- Spring自带的事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!-- 配置事务的通知，使用tx名称空间 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!--配置事务的属性-->
+        <tx:attributes>
+            <!--
+            name：指定方法名称，是业务核心方法
+            read-only：是否是只读事务。默认false，不只读。
+            isolation：指定事务的隔离级别。默认值是使用数据库的默认隔离级别。
+            propagation：指定事务的传播行为。
+            timeout：指定超时时间。默认值为：-1。永不超时。
+            rollback-for：用于指定一个异常，当执行产生该异常时，事务回滚。产生其他异常，事务不回滚。没有默认值，任何异常都回滚。
+            no-rollback-for：用于指定一个异常，当产生该异常时，事务不回滚，产生其他异常时，事务回滚。没有默认值，任何异常都回滚。
+            -->
+            <!-- 所有方法 -->
+            <!--REQUIRED：默认是这个。
+                如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。
+                (最后必定是一个事务，适合增删改操作)-->
+            <tx:method name="*"
+                       read-only="false"
+                       propagation="REQUIRED"/>
+            <!-- 以find/get开头的方法（查询方法） -->
+            <!-- SUPPORTS：支持当前事务，如果当前没有事务，就以非事务方式执行。适合查询操作-->
+            <tx:method name="find*"
+                       read-only="true"
+                       propagation="SUPPORTS"/>
+            <tx:method name="get*"
+                       read-only="true"
+                       propagation="SUPPORTS"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 配置通知 -->
+    <aop:config>
+        <!-- 配置切入点表达式-->
+        <aop:pointcut id="pt1" expression="execution(* pers.wtk.service.impl.*.*(..))"/>
+        <!-- 配置切入点表达式和事务通知管理器的对应关系 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt1"/>
+    </aop:config>
+
+</beans>

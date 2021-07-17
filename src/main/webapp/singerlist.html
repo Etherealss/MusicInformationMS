@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>歌手列表</title>
+
+    <link rel="stylesheet" href="css/singer/singerlist.css" type="text/css"/>
+    <link rel="stylesheet" href="css/header.css" type="text/css"/>
+
+    <!--bootstrap导入-->
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--toastr消息提示插件导入-->
+    <link rel="stylesheet" href="toastr/toastr.min.css">
+    <script src="toastr/toastr.min.js"></script>
+    <!--自定义toastr配置文件-->
+    <script src="config/toastr-config.js"></script>
+
+    <script src="js/utils/web_util.js"></script>
+    <script src="js/utils/page_util.js"></script>
+    <script src="js/user/user_init.js"></script>
+    <script src="js/user/user_control.js"></script>
+    <script src="js/singer/singerlist_init.js"></script>
+    <script src="js/singer/singer_control.js"></script>
+    <script src="js/singer/singer_search.js"></script>
+
+
+</head>
+<body>
+<header class="container-fluid">
+    <div id="system_name_box">
+        <span>音乐管理系统</span>
+    </div>
+    <!-- 用户头像及信息 -->
+    <div id="user_info_box">
+        <div class="btn-group">
+            <button type="button" id="header_username_btn"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                用户名
+                <!--图标-->
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" id="header_user_center">个人中心</a></li>
+                <li><a href="javascript:void(0)" id="header_change_pw">修改密码</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0)" id="header_user_logout" onclick="ajaxLogout()">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="javascript:void(0)">歌手管理</a>
+        </div>
+        <!--搜索-->
+        <div class="collapse navbar-collapse" id="singers_search_box">
+            <ul class="nav navbar-nav">
+                <!--搜索方式 下拉框-->
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+                       role="button" aria-haspopup="true" aria-expanded="false">
+                        搜索类型
+                        <span class="caret"></span>
+                    </a>
+                    <!--下拉框选项-->
+                    <ul class="dropdown-menu" id="singers_search_type_menu" data-search-type="singerName">
+                        <li><a href="javascript:void(0)" onclick="changeSingerSearchType('singerName')">按歌手名搜索按</a></li>
+                        <li><a href="javascript:void(0)" onclick="changeSingerSearchType('singerId')">按歌手ID搜索</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--搜索表单-->
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入歌手名" id="singers_search_input">
+                </div>
+                <button type="button" class="btn btn-default" onclick="searchSinger()">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right" id="singers_nav_btn">
+                <li>
+                    <button type="button" id="musics_to_singerlist_btn"
+                            class="btn btn-primary" onclick="window.location.href = 'musiclist.html'">
+                        前往音乐列表
+                    </button>
+                </li>
+<!--                <li>-->
+<!--                    <button type="button" id="singers_add_singer_btn"-->
+<!--                            class="btn btn-primary admin_btn" onclick="toAddSinger()">-->
+<!--                        添加歌手-->
+<!--                    </button>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button type="button" id="singers_delete_singer_btn"-->
+<!--                            class="btn btn-default admin_btn" onclick="deleteMultiSinger()">-->
+<!--                        删除所选歌手-->
+<!--                    </button>-->
+<!--                </li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--主体-->
+<article class="shadow container">
+    <!-- 音乐管理 -->
+    <!--表格-->
+    <div id="singers_form" class="row" style="margin: 10px 20px 0 20px;">
+        <h3 id="singers_form_title">歌手管理</h3>
+        <!--table-bordered:边框  table-striped:条纹-->
+        <table class="table table-hover table-bordered table-striped" id="singers_table">
+            <thead class="thead-light">
+            <tr id="singers_table_titleline">
+                <th style="width:7%;">选择</th>
+                <th style="width:7%;">序号</th>
+                <th style="width:7%;">歌手ID</th>
+                <th style="width:10%;">歌手名</th>
+                <th style="width:5%;">性别</th>
+                <th style="width:12%;">生日</th>
+                <th style="width:10%;">电话</th>
+                <th style="width:23%;">描述(悬浮显示所有)</th>
+                <th style="width:19%;">操作</th>
+            </tr>
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    <div class="multi_delete_checkbox">-->
+<!--                        <input type="checkbox" name="multi_delete" value="1">-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--                <td>1</td>-->
+<!--                <td>1231341</td>-->
+<!--                <td title="周杰伦">周杰伦</td>-->
+<!--                <td>男</td>-->
+<!--                <td>2020年05月01日</td>-->
+<!--                <td>13078974654</td>-->
+<!--                <td title="周杰伦（Jay Chou），1979年1月18日出生于台湾省新北市，祖籍福建省泉州市永春县，中国台湾流行乐男歌手、原创音乐人、演员、导演、编剧，毕业于淡江中学。">-->
+<!--                    周杰伦（Jay Chou），1979年1月18日出生于台湾省新北市， 祖籍福建省泉州市永春县，中国台湾流行乐男歌手、原创音乐人、 演员、导演、编剧，毕业于淡江中学。</td>-->
+<!--                <td>-->
+<!--                    <a href="addsinger.html?id=1" class="btn btn-primary btn-xs">-->
+<!--                        <span class="glyphicon glyphicon-info-sign"></span>详情-->
+<!--                    </a>-->
+<!--                    <a href="addsinger.html?id=1" class="btn btn-info btn-xs">-->
+<!--                        <span class="glyphicon glyphicon-edit"></span> 编辑-->
+<!--                    </a>-->
+<!--                    <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick='deleteSinger(" + arr[i].id + ")'>-->
+<!--                        <span class="glyphicon glyphicon-remove"></span>删除-->
+<!--                    </a>-->
+<!--                </td>-->
+<!--            </tr>-->
+
+            </thead>
+        </table>
+    </div>
+
+    <!--分页导航栏-->
+    <div class="row">
+        <nav class="pager">
+            <!-- 按钮 -->
+            <ul class="pagination" id="page_btn_area">
+            </ul>
+        </nav>
+    </div>
+</article>
+</body>
+</html>
