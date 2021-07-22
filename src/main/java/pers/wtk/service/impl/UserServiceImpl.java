@@ -8,13 +8,10 @@ import pers.wtk.common.exception.specific.ActionFailException;
 import pers.wtk.common.exception.BadRequestException;
 import pers.wtk.common.exception.specific.NotFoundException;
 import pers.wtk.common.strategy.page.PageChoose;
-import pers.wtk.common.strategy.page.options.PageUserChoose;
-import pers.wtk.common.strategy.page.options.user.QueryAllUser;
-import pers.wtk.common.strategy.page.options.user.QueryUserByUserId;
-import pers.wtk.common.strategy.page.options.user.QueryUserByUsername;
+import pers.wtk.common.strategy.page.mapper.DaoMapper;
+import pers.wtk.common.strategy.page.mapper.UserDaoMapper;
 import pers.wtk.dao.AdminDao;
 import pers.wtk.dao.UserDao;
-import pers.wtk.pojo.po.User;
 import pers.wtk.pojo.po.User;
 import pers.wtk.pojo.vo.Page;
 import pers.wtk.service.UserService;
@@ -125,24 +122,10 @@ public class UserServiceImpl implements UserService {
         /*
          策略模式选择
          */
-        PageUserChoose userChoose;
-        String keyword;
-        if (userId != null && userId > 0) {
-            // 按userId搜索
-            userChoose = new PageUserChoose(new QueryUserByUserId(userDao));
-            keyword = String.valueOf(userId);
-        } else if (username != null && username.length() > 0) {
-            // 按username搜索
-            userChoose = new PageUserChoose(new QueryUserByUsername(userDao));
-            keyword = username;
-        } else {
-            // 搜索所有
-            userChoose = new PageUserChoose(new QueryAllUser(userDao));
-            keyword = "";
-        }
+        DaoMapper<User> daoMapper = new UserDaoMapper(curPage, offset, userDao);
+        PageChoose<User> pageChoose = PageChoose.buildPageChoose(userId, username, daoMapper);
         // 按歌手分页
-        PageChoose<User> pageChoose = new PageChoose<>(userChoose);
-        Page<User> page = pageChoose.getPage(keyword, curPage, offset);
+        Page<User> page = pageChoose.getPage();
         List<User> userList = page.getDataList();
         for (User user : userList) {
             List<String> userPremissions = adminDao.getUserPremissions(user.getId());

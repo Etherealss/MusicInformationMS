@@ -33,6 +33,12 @@ public interface SingerDao {
     List<Singer> getSingersByMusicId(long musicId);
 
     /**
+     * 获取所有歌手
+     * @return
+     */
+    List<Singer> getAllSinger();
+
+    /**
      * 获取[start, offset)区间内的数据
      * 使用sql limit查询，第一条数据的start为0
      * @param start

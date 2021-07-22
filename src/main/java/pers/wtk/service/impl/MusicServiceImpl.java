@@ -9,11 +9,12 @@ import pers.wtk.common.exception.specific.ActionFailException;
 import pers.wtk.common.exception.specific.NotFoundException;
 import pers.wtk.common.exception.specific.TypeErrorException;
 import pers.wtk.common.strategy.page.PageChoose;
-import pers.wtk.common.strategy.page.options.PageMusicChoose;
-import pers.wtk.common.strategy.page.options.music.QueryAllMusic;
-import pers.wtk.common.strategy.page.options.music.QueryMusicByMusicId;
-import pers.wtk.common.strategy.page.options.music.QueryMusicByMusicName;
-import pers.wtk.common.strategy.page.options.music.QueryMusicBySingerName;
+import pers.wtk.common.strategy.page.mapper.DaoMapper;
+import pers.wtk.common.strategy.page.mapper.MusicDaoMapper;
+import pers.wtk.common.strategy.page.query.QueryAllStragegy;
+import pers.wtk.common.strategy.page.query.QueryByIdStragegy;
+import pers.wtk.common.strategy.page.query.QueryByNameStragegy;
+import pers.wtk.common.strategy.page.query.QueryBySingerName4MusicStragegy;
 import pers.wtk.dao.LyricDao;
 import pers.wtk.dao.MusicDao;
 import pers.wtk.dao.MusicSingerDao;
@@ -85,32 +86,29 @@ public class MusicServiceImpl implements MusicService {
         /*
          策略模式选择
          */
-        PageMusicChoose musicChoose;
-        String keyword;
+        // 按音乐分页
+        PageChoose<Music> pageChoose;
+        DaoMapper<Music> daoMapper = new MusicDaoMapper(curPage, offset, musicDao);
         if (musicId != null && musicId > 0) {
             // 按musicId搜索
-            musicChoose = new PageMusicChoose(new QueryMusicByMusicId(musicDao));
-            keyword = String.valueOf(musicId);
-
-        } else if (singerName != null && singerName.length() > 0) {
+            daoMapper.setKeyword(String.valueOf(musicId));
+            pageChoose = new PageChoose<>(new QueryByIdStragegy<>(daoMapper));
+        }
+        else if (singerName != null && singerName.length() > 0) {
             // 按singerName搜索
-            musicChoose = new PageMusicChoose(new QueryMusicBySingerName(musicDao));
-            keyword = singerName;
+            daoMapper.setKeyword(singerName);
+            pageChoose = new PageChoose<>(new QueryBySingerName4MusicStragegy<>(daoMapper));
 
         } else if (musicName != null && musicName.length() > 0) {
             // 按musicName搜索
-            musicChoose = new PageMusicChoose(new QueryMusicByMusicName(musicDao));
-            keyword = musicName;
-
+            daoMapper.setKeyword(musicName);
+            pageChoose = new PageChoose<>(new QueryByNameStragegy<>(daoMapper));
         } else {
             // 搜索所有
-            musicChoose = new PageMusicChoose(new QueryAllMusic(musicDao));
-            keyword = "";
+            pageChoose = new PageChoose<>(new QueryAllStragegy<>(daoMapper));
         }
-        // 按音乐分页
-        PageChoose<Music> pageChoose = new PageChoose<>(musicChoose);
 
-        Page<Music> page = pageChoose.getPage(keyword, curPage, offset);
+        Page<Music> page = pageChoose.getPage();
         // 为音乐数据添加歌手和歌词
         List<Music> musicList = page.getDataList();
         if (singerName != null && singerName.length() > 0) {

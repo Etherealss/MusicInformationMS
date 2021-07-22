@@ -49,6 +49,10 @@
         WHERE singer_name LIKE concat("%", #{singerName}, "%")
         LIMIT #{start}, #{offset};
     </select>
+
+    <select id="getAllSinger" resultType="pers.wtk.pojo.po.Singer">
+        SELECT * FROM singer;
+    </select>
     <!--—————————————————————————————— 获取范围记录结束 ——————————————————————————————-->
 
     <insert id="insertSinger">

@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 import pers.wtk.common.exception.specific.ActionFailException;
 import pers.wtk.common.exception.specific.NotFoundException;
 import pers.wtk.common.strategy.page.PageChoose;
-import pers.wtk.common.strategy.page.options.PageSingerChoose;
-import pers.wtk.common.strategy.page.options.singer.QueryAllSinger;
-import pers.wtk.common.strategy.page.options.singer.QuerySingerBySingerId;
-import pers.wtk.common.strategy.page.options.singer.QuerySingerBySingerName;
+import pers.wtk.common.strategy.page.mapper.DaoMapper;
+import pers.wtk.common.strategy.page.mapper.SingerDaoMapper;
+import pers.wtk.common.strategy.page.query.QueryAllStragegy;
+import pers.wtk.common.strategy.page.query.QueryByIdStragegy;
+import pers.wtk.common.strategy.page.query.QueryByNameStragegy;
 import pers.wtk.dao.SingerDao;
 import pers.wtk.pojo.po.Singer;
 import pers.wtk.pojo.vo.Page;
@@ -68,25 +69,9 @@ public class SingerServiceImpl implements SingerService {
         /*
          策略模式选择
          */
-        PageSingerChoose singerChoose;
-        String keyword;
-        if (singerId != null && singerId > 0) {
-            // 按singerId搜索
-            singerChoose = new PageSingerChoose(new QuerySingerBySingerId(singerDao));
-            keyword = String.valueOf(singerId);
-        } else if (singerName != null && singerName.length() > 0) {
-            // 按singerName搜索
-            singerChoose = new PageSingerChoose(new QuerySingerBySingerName(singerDao));
-            keyword = singerName;
-        } else {
-            // 搜索所有
-            singerChoose = new PageSingerChoose(new QueryAllSinger(singerDao));
-            keyword = "";
-        }
-        // 按歌手分页
-        PageChoose<Singer> pageChoose = new PageChoose<>(singerChoose);
-
-        return pageChoose.getPage(keyword, curPage, offset);
+        DaoMapper<Singer> daoMapper = new SingerDaoMapper(curPage, offset, singerDao);
+        PageChoose<Singer> pageChoose = PageChoose.buildPageChoose(singerId, singerName, daoMapper);
+        return pageChoose.getPage();
 
     }
 
